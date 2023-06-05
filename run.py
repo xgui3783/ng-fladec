@@ -17,8 +17,11 @@ def main(src: str, dst: str, recursive: bool):
     _dst = Path(dst)
     for v in get_all(src, recursive=recursive):
         src_acc = LocalSrcAccessor(v.base_dir, v.flat, v.gzip)
-
-        dst_acc = FileAccessor(_dst / v.base_dir, True, False)
+        
+        _dst_path = _dst / v.relative_path
+        _dst_path.mkdir(exist_ok=True)
+            
+        dst_acc = FileAccessor(_dst_path, True, False)
         src_acc.mirror_to(dst_acc)
     
     

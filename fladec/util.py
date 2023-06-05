@@ -9,6 +9,7 @@ class PrecompSrcVerificationException(Exception): pass
 @dataclass
 class PrecompSrc:
     base_dir: str
+    relative_path: str=None
     gzip: bool=None
     flat: bool=None
 
@@ -48,6 +49,7 @@ def get_all(src: Path, recursive: bool=False):
             precomp_src = PrecompSrc(base_dir=str(Path(dirpath) / filename))
             try:
                 precomp_src.verify()
+                precomp_src.relative_path = (Path(dirpath) / filename).relative_to(Path(src))
                 yield precomp_src
             except PrecompSrcVerificationException:
                 pass
