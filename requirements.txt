@@ -1,0 +1,2 @@
+click
+git+https://github.com/xgui3783/chunk_replicator.git@386dcd2c689b27cc53e8bda007fc7fd0e088b724
