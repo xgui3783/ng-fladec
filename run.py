@@ -1,28 +1,26 @@
 import click
-from chunk_replicator import LocalSrcAccessor
-from neuroglancer_scripts.file_accessor import FileAccessor
-from fladec import get_all
-from pathlib import Path
+from chunk_replicator import LocalSrcAccessor, EbrainsDataproxyHttpReplicatorAccessor, DataProxyBucket, User
+from fladec import get_all, S2SToken
+
 
 @click.command()
 @click.option("--src", help="Source directory")
-@click.option("--dst", help="Destination directory")
+@click.option("--dst-bucket", help="Destination Bucket")
 @click.option("--recursive", default=False, help="Recursively search for info")
-def main(src: str, dst: str, recursive: bool):
+def main(src: str, dst_bucket: str, recursive: bool):
     if not src:
-        raise Exception(f"src must be defined!")
-    if not dst:
-        raise Exception(f"src must be defined!")
+        raise Exception(f"--src must be defined!")
+    if not dst_bucket:
+        raise Exception(f"--dst-bucket must be defined!")
     
-    _dst = Path(dst)
     for v in get_all(src, recursive=recursive):
         src_acc = LocalSrcAccessor(v.base_dir, v.flat, v.gzip)
         
-        _dst_path = _dst / v.relative_path
-        _dst_path.mkdir(exist_ok=True)
+        user = User(S2SToken.get_token())
+        bucket = DataProxyBucket(user=user, bucketname=dst_bucket)
+        dst_bucket = EbrainsDataproxyHttpReplicatorAccessor(prefix=v.relative_path, dataproxybucket=bucket, smart_gzip=True)
             
-        dst_acc = FileAccessor(_dst_path, True, False)
-        src_acc.mirror_to(dst_acc)
+        src_acc.mirror_to(dst_bucket)
     
     
 
