@@ -33,6 +33,16 @@ class PrecompSrc:
                     return
                 
 def get_all(src: Path, recursive: bool=False):
+    root = PrecompSrc(base_dir=src)
+    try:
+        root.verify()
+        yield root
+    except PrecompSrcVerificationException:
+        pass
+
+    if not recursive:
+        return
+
     for dirpath, dirnames, filenames in os.walk(src, topdown=True):
         for filename in dirnames:
             precomp_src = PrecompSrc(base_dir=str(Path(dirpath) / filename))
@@ -41,5 +51,3 @@ def get_all(src: Path, recursive: bool=False):
                 yield precomp_src
             except PrecompSrcVerificationException:
                 pass
-        if not recursive:
-            break
