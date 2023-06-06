@@ -1,3 +1,3 @@
 click
 authlib
-git+https://github.com/xgui3783/chunk_replicator.git@504739dd396cb46762a5272418724d038066bf80
+git+https://github.com/xgui3783/chunk_replicator.git@f8595b9dbec953b4b9c3dafa333ee6980c4e4af4
