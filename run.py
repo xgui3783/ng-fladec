@@ -18,9 +18,9 @@ def main(src: str, dst_bucket: str, recursive: bool):
         
         user = User(S2SToken.get_token())
         bucket = DataProxyBucket(user=user, bucketname=dst_bucket)
-        dst_bucket = EbrainsDataproxyHttpReplicatorAccessor(prefix=v.relative_path, dataproxybucket=bucket, smart_gzip=True)
+        dst_bucket_acc = EbrainsDataproxyHttpReplicatorAccessor(prefix=v.relative_path, dataproxybucket=bucket, smart_gzip=True)
             
-        src_acc.mirror_to(dst_bucket)
+        src_acc.mirror_to(dst_bucket_acc)
     
     
 
