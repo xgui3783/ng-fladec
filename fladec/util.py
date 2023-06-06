@@ -47,7 +47,7 @@ def get_all(src: Path, recursive: bool=False):
     if not recursive:
         return
 
-    for dirpath, dirnames, filenames in os.walk(src, topdown=True):
+    for dirpath, dirnames, filenames in os.walk(src, topdown=True, followlinks=True):
         for filename in dirnames:
             precomp_src = PrecompSrc(base_dir=str(Path(dirpath) / filename))
             try:
