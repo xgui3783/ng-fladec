@@ -15,13 +15,13 @@ def main(src: str, dst_bucket: str, recursive: bool):
     
     for v in get_all(src, recursive=recursive):
         print(f"Processing {v.relative_path}")
-        
+
         src_acc = LocalSrcAccessor(v.base_dir, v.flat, v.gzip)
         
         user = User(S2SToken.get_token())
         bucket = DataProxyBucket(user=user, bucketname=dst_bucket)
         dst_bucket_acc = EbrainsDataproxyHttpReplicatorAccessor(prefix=str(v.relative_path), dataproxybucket=bucket, smart_gzip=True)
-            
+        
         src_acc.mirror_to(dst_bucket_acc)
     
     

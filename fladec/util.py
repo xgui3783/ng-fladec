@@ -20,6 +20,10 @@ class PrecompSrc:
         base_dir = Path(self.base_dir)
         if not (base_dir / 'info').exists():
             raise PrecompSrcVerificationException(f"{base_dir / 'info'} does not exist!")
+        with open(base_dir / 'info', 'r') as fp:
+            loaded_info = json.load(fp=fp)
+            if loaded_info.get("@type") == "neuroglancer_legacy_mesh":
+                raise PrecompSrcVerificationException(f"{base_dir / 'info'} appears to be legacy mesh according to @type attribute")
         for dirpath, dirnames, filenames in os.walk(base_dir):
             for filename in filenames:
                 block = r'[0-9]+-[0-9]+'
