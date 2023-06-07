@@ -14,6 +14,8 @@ def main(src: str, dst_bucket: str, recursive: bool):
         raise Exception(f"--dst-bucket must be defined!")
     
     for v in get_all(src, recursive=recursive):
+        print(f"Processing {v.relative_path}")
+        
         src_acc = LocalSrcAccessor(v.base_dir, v.flat, v.gzip)
         
         user = User(S2SToken.get_token())
