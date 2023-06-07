@@ -23,6 +23,10 @@ class PrecompSrc:
         base_dir = Path(self.base_dir)
         if not (base_dir / 'info').exists():
             raise PrecompSrcVerificationException(f"{base_dir / 'info'} does not exist!")
+        
+        if not (base_dir / 'transform.json').exists():
+            raise PrecompSrcVerificationException(f"{base_dir / 'transform.json'} does not exist!")
+
         with open(base_dir / 'info', 'r') as fp:
             loaded_info = json.load(fp=fp)
             if loaded_info.get("@type") == "neuroglancer_legacy_mesh":
