@@ -1,5 +1,5 @@
 import click
-from chunk_replicator import LocalSrcAccessor, EbrainsDataproxyHttpReplicatorAccessor, DataProxyBucket, User
+from chunk_replicator import LocalSrcAccessor, EbrainsDataproxyHttpReplicatorAccessor, DataProxyBucket, User, LocalMeshSrcAccessor
 from fladec import get_all, S2SToken
 
 
@@ -16,7 +16,7 @@ def main(src: str, dst_bucket: str, recursive: bool):
     for v in get_all(src, recursive=recursive):
         print(f"Processing {v.relative_path}")
 
-        src_acc = LocalSrcAccessor(v.base_dir, v.flat, v.gzip)
+        src_acc = LocalSrcAccessor(v.base_dir, v.flat, v.gzip) if not v.mesh_only else LocalMeshSrcAccessor(v.base_dir, v.flat, v.gzip)
         
         user = User(S2SToken.get_token())
         bucket = DataProxyBucket(user=user, bucketname=dst_bucket)

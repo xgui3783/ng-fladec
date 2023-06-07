@@ -6,6 +6,7 @@ import re
 from base64 import b64decode
 from authlib.integrations.requests_client.oauth2_session import OAuth2Session
 import time
+from typing import List
 
 class PrecompSrcVerificationException(Exception): pass
 
@@ -16,6 +17,8 @@ class PrecompSrc:
     gzip: bool=None
     flat: bool=None
 
+    mesh_only: bool=False
+
     def verify(self):
         base_dir = Path(self.base_dir)
         if not (base_dir / 'info').exists():
@@ -24,6 +27,12 @@ class PrecompSrc:
             loaded_info = json.load(fp=fp)
             if loaded_info.get("@type") == "neuroglancer_legacy_mesh":
                 raise PrecompSrcVerificationException(f"{base_dir / 'info'} appears to be legacy mesh according to @type attribute")
+
+            keys: List[str] = [scale.get("key") for scale in loaded_info.get("scales")]
+            if any( (not (base_dir / key).is_dir()) for key in keys ):
+                self.mesh_only = True
+
+
         for dirpath, dirnames, filenames in os.walk(base_dir):
             for filename in filenames:
                 block = r'[0-9]+-[0-9]+'
